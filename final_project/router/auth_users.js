@@ -5,22 +5,26 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username)=>{ 
+// Helper function: Check if username is valid (i.e., does not already exist)
+const isValid = (username) => {
     let userswithsamename = users.filter((user) => {
         return user.username === username;
     });
+    return userswithsamename.length === 0; // True if username is available
 }
 
-const authenticatedUser = (username,password)=>{ 
+// Helper function: Check if username and password match a registered user
+const authenticatedUser = (username, password) => {
     let validusers = users.filter((user) => {
         return (user.username === username && user.password === password);
     });
     return validusers.length > 0; // True if user is found and password matches
 }
 
-//only registered users can login
-regd_users.post("/login", (req,res) => {
-const username = req.body.username;
+// Task 7: Login for registered users
+// [cite: 92, 93]
+regd_users.post("/login", (req, res) => {
+    const username = req.body.username;
     const password = req.body.password;
 
     if (!username || !password) {
@@ -42,12 +46,12 @@ const username = req.body.username;
     } else {
         return res.status(208).json({ message: "Invalid Login. Check username and password" });
     }
-  
 });
 
-// Add a book review
+// Task 8: Add or modify a book review
+// [cite: 98, 99, 100]
 regd_users.put("/auth/review/:isbn", (req, res) => {
-const isbn = req.params.isbn;
+    const isbn = req.params.isbn;
     const reviewText = req.query.review;
     const username = req.session.authorization.username; // Get username from session
 
@@ -66,6 +70,8 @@ const isbn = req.params.isbn;
     }
 });
 
+// Task 9: Delete a book review
+// [cite: 105, 106]
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const username = req.session.authorization.username; // Get username from session
